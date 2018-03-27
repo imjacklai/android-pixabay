@@ -61,3 +61,5 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
+
+src/main/java/tw/jacklai/pixabay/Config.kt
