@@ -13,5 +13,11 @@ data class Image(
         val webFormatUrl: String,
 
         @SerializedName("largeImageURL")
-        val largeImageUrl: String
+        val largeImageUrl: String,
+
+        @SerializedName("webformatWidth")
+        val webFormatWidth: Int,
+
+        @SerializedName("webformatHeight")
+        val webFormatHeight: Int
 )

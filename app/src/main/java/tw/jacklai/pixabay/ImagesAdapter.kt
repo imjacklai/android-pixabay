@@ -62,6 +62,7 @@ class ImagesAdapter : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
                         .placeholder(R.mipmap.image_loading)
                         .error(R.mipmap.image_not_found)
                         .fallback(R.mipmap.image_not_found)
+                        .override((image.webFormatWidth * 0.6).toInt(), (image.webFormatHeight * 0.6).toInt())
                         .into(imageView)
             }
         }
