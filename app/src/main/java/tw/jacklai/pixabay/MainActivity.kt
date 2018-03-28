@@ -142,6 +142,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setRecyclerViewLayoutManager(viewType: ViewType) {
+        val position = when (recyclerView.layoutManager) {
+            is LinearLayoutManager -> (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+            is GridLayoutManager -> (recyclerView.layoutManager as GridLayoutManager).findFirstCompletelyVisibleItemPosition()
+            is StaggeredGridLayoutManager -> (recyclerView.layoutManager as StaggeredGridLayoutManager).findFirstCompletelyVisibleItemPositions(null)[0]
+            else -> 0
+        }
+
         recyclerView.layoutManager = when (viewType) {
             ViewType.LIST -> LinearLayoutManager(this)
             ViewType.GRID -> GridLayoutManager(this, 2)
@@ -149,6 +156,7 @@ class MainActivity : AppCompatActivity() {
         }
         imagesAdapter.setViewType(viewType)
         setRecyclerViewScrollListener()
+        recyclerView.scrollToPosition(position)
     }
 
     private fun setRecyclerViewScrollListener() {
