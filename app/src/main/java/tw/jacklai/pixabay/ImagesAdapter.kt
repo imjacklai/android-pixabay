@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import kotlinx.android.synthetic.main.item_image.view.*
+import kotlinx.android.synthetic.main.item_list_image.view.*
 import tw.jacklai.pixabay.model.Image
 
 /**
@@ -16,13 +16,26 @@ import tw.jacklai.pixabay.model.Image
 class ImagesAdapter : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
     private val images = ArrayList<Image>()
 
+    private var viewType: ViewType = ViewType.LIST
+
     fun setData(images: List<Image>) {
         this.images.addAll(images)
         notifyDataSetChanged()
     }
 
+    fun setViewType(viewType: ViewType) {
+        this.viewType = viewType
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
+        val layout = when (viewType) {
+            1 -> R.layout.item_list_image
+            2 -> R.layout.item_grid_image
+            3 -> R.layout.item_staggered_grid_image
+            else -> R.layout.item_list_image
+        }
+        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return ImageViewHolder(view)
     }
 
@@ -32,6 +45,10 @@ class ImagesAdapter : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
 
     override fun getItemCount(): Int {
         return images.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return viewType.value
     }
 
     inner class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
