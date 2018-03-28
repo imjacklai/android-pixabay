@@ -4,8 +4,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.item_list_image.view.*
 import tw.jacklai.pixabay.model.Image
 
@@ -59,11 +57,11 @@ class ImagesAdapter : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
     inner class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bindView(image: Image) {
             with (itemView) {
-                Glide.with(imageView.context)
+                GlideApp.with(imageView.context)
                         .load(image.webFormatUrl)
-                        .apply(RequestOptions()
-                                .placeholder(R.mipmap.ic_launcher_round)
-                                .error(R.mipmap.ic_launcher))
+                        .placeholder(R.mipmap.image_loading)
+                        .error(R.mipmap.image_not_found)
+                        .fallback(R.mipmap.image_not_found)
                         .into(imageView)
             }
         }
