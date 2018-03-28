@@ -12,10 +12,9 @@
     app:cardUseCompatPadding="true"
     app:cardPreventCornerOverlap="true">
 
-    <ImageView
+    <tw.jacklai.pixabay.ScaleImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"/>
+        android:layout_height="wrap_content"/>
 
 </android.support.v7.widget.CardView>

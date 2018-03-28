@@ -57,6 +57,10 @@ class ImagesAdapter : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
     inner class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bindView(image: Image) {
             with (itemView) {
+                if (viewType == ViewType.STAGGERED_GRID) {
+                    (imageView as ScaleImageView).setInitSize(image.webFormatWidth, image.webFormatHeight)
+                }
+
                 GlideApp.with(imageView.context)
                         .load(image.webFormatUrl)
                         .placeholder(R.mipmap.image_loading)
