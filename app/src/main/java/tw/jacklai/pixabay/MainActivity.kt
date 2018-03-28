@@ -1,5 +1,8 @@
 package tw.jacklai.pixabay
 
+import android.app.SearchManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
@@ -18,6 +21,8 @@ import tw.jacklai.pixabay.model.api.PixabayService
 
 class MainActivity : AppCompatActivity() {
     private val pixabayService by lazy { PixabayService.create() }
+
+    private lateinit var searchView: SearchView
 
     private lateinit var imagesAdapter: ImagesAdapter
 
@@ -56,14 +61,25 @@ class MainActivity : AppCompatActivity() {
         search(query)
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (Intent.ACTION_SEARCH == intent?.action) {
+            val query = intent.getStringExtra(SearchManager.QUERY)
+            searchView.setQuery(query, true)
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
 
         val searchItem = menu?.findItem(R.id.search)
 
-        val searchView = searchItem?.actionView as SearchView
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+
+        searchView = searchItem?.actionView as SearchView
         searchView.queryHint = getString(R.string.search_hint)
         searchView.setIconifiedByDefault(false)
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
 
         val options = searchView.imeOptions
         searchView.imeOptions = options or EditorInfo.IME_FLAG_NO_EXTRACT_UI
@@ -115,6 +131,7 @@ class MainActivity : AppCompatActivity() {
                                 if (isReload) {
                                     imagesAdapter.removeData()
                                     isReload = false
+                                    recyclerView.scrollToPosition(0)
                                 }
 
                                 if (Math.ceil(response.total / perPage.toDouble()).toInt() == page) {
