@@ -7,6 +7,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import tw.jacklai.pixabay.Config
 import tw.jacklai.pixabay.model.Response
 import java.util.concurrent.TimeUnit
 
@@ -15,8 +16,10 @@ import java.util.concurrent.TimeUnit
  */
 
 interface PixabayService {
-    @GET("./")
-    fun search(@Query("key") key: String, @Query("q") query: String): Observable<Response>
+    @GET("./?key=${Config.PIXABAY_API_KEY}")
+    fun search(@Query("q") query: String,
+               @Query("page") page: Int,
+               @Query("per_page") perPage: Int): Observable<Response>
 
     companion object {
         fun create(): PixabayService {

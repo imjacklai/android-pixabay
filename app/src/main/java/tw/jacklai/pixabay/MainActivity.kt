@@ -24,6 +24,10 @@ class MainActivity : AppCompatActivity() {
 
     private var query = ""
 
+    private val perPage = 20
+    private var page = 1
+    private var isLoading = false
+    private var isLastPage = false
     private var isReload = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         refreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccent))
 
         refreshLayout.setOnRefreshListener {
-            isReload = true
+            reset()
             search(query)
         }
 
@@ -43,6 +47,8 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = imagesAdapter
+
+        setRecyclerViewScrollListener()
 
         search(query)
     }
@@ -59,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query == null) return false
-                isReload = true
+                reset()
                 search(query)
                 searchView.clearFocus()
                 return true
@@ -92,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     private fun search(query: String) {
         showLoading()
         this.query = query
-        pixabayService.search(Config.PIXABAY_API_KEY, query)
+        pixabayService.search(query, page, perPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -104,6 +110,12 @@ class MainActivity : AppCompatActivity() {
                                     imagesAdapter.removeData()
                                     isReload = false
                                 }
+
+                                if (Math.ceil(response.total / perPage.toDouble()).toInt() == page) {
+                                    isLastPage = true
+                                }
+
+                                isLoading = false
 
                                 imagesAdapter.addData(response.images)
                             }
@@ -124,6 +136,21 @@ class MainActivity : AppCompatActivity() {
             ViewType.STAGGERED_GRID -> StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
         imagesAdapter.setViewType(viewType)
+        setRecyclerViewScrollListener()
+    }
+
+    private fun setRecyclerViewScrollListener() {
+        recyclerView.addOnScrollListener(object : PaginationScrollListener(recyclerView.layoutManager) {
+            override fun loadMoreItems() {
+                isLoading = true
+                page++
+                search(query)
+            }
+
+            override fun isLastPage(): Boolean = isLastPage
+
+            override fun isLoading(): Boolean = isLoading
+        })
     }
 
     private fun showLoading() {
@@ -132,5 +159,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideLoading() {
         refreshLayout.isRefreshing = false
+    }
+
+    private fun reset() {
+        page = 1
+        isLoading = true
+        isLastPage = false
+        isReload = true
     }
 }
