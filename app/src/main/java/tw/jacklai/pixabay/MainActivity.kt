@@ -10,6 +10,7 @@ import android.support.v7.widget.SearchView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
@@ -36,6 +37,8 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
 
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
         refreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccent))
 
         refreshLayout.setOnRefreshListener {
@@ -61,6 +64,9 @@ class MainActivity : AppCompatActivity() {
         val searchView = searchItem?.actionView as SearchView
         searchView.queryHint = getString(R.string.search_hint)
         searchView.setIconifiedByDefault(false)
+
+        val options = searchView.imeOptions
+        searchView.imeOptions = options or EditorInfo.IME_FLAG_NO_EXTRACT_UI
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -128,6 +134,7 @@ class MainActivity : AppCompatActivity() {
                         { error ->
                             run {
                                 hideLoading()
+                                isLoading = false
                                 Snackbar.make(coordinatorLayout, "Connection failed", Snackbar.LENGTH_SHORT).show()
                             }
                         }
