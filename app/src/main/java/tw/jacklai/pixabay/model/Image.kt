@@ -9,15 +9,23 @@ import com.google.gson.annotations.SerializedName
 data class Image(
         val id: Int,
 
-        @SerializedName("webformatURL")
-        val webFormatUrl: String,
-
         @SerializedName("largeImageURL")
         val largeImageUrl: String,
+
+        @SerializedName("webformatURL")
+        val webFormatUrl: String,
 
         @SerializedName("webformatWidth")
         val webFormatWidth: Int,
 
         @SerializedName("webformatHeight")
-        val webFormatHeight: Int
+        val webFormatHeight: Int,
+
+        val user: String,
+
+        @SerializedName("userImageURL")
+        val userImageUrl: String,
+
+        val likes: Int,
+        val favorites: Int
 )
