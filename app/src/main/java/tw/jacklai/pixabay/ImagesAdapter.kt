@@ -18,8 +18,13 @@ class ImagesAdapter : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
 
     private var viewType: ViewType = ViewType.LIST
 
-    fun setData(images: List<Image>) {
+    fun addData(images: List<Image>) {
         this.images.addAll(images)
+        notifyDataSetChanged()
+    }
+
+    fun removeData() {
+        images.clear()
         notifyDataSetChanged()
     }
 

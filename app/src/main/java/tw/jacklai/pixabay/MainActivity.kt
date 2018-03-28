@@ -1,6 +1,7 @@
 package tw.jacklai.pixabay
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.*
 import android.util.Log
@@ -18,11 +19,22 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var layoutManager: RecyclerView.LayoutManager
 
+    private var query = ""
+
+    private var isReload = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
+
+        refreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccent))
+
+        refreshLayout.setOnRefreshListener {
+            isReload = true
+            search(query)
+        }
 
         imagesAdapter = ImagesAdapter()
 
@@ -30,6 +42,8 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = imagesAdapter
+
+        search(query)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -44,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query == null) return false
+                isReload = true
                 search(query)
                 searchView.clearFocus()
                 return true
@@ -63,12 +78,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun search(query: String) {
+        showLoading()
+        this.query = query
         pixabayService.search(Config.PIXABAY_API_KEY, query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { response -> imagesAdapter.setData(response.images) },
-                        { error -> Log.e("asd", error.message) }
+                        { response ->
+                            run {
+                                hideLoading()
+
+                                if (isReload) {
+                                    imagesAdapter.removeData()
+                                    isReload = false
+                                }
+
+                                imagesAdapter.addData(response.images)
+                            }
+                        },
+                        { error ->
+                            run {
+                                hideLoading()
+                                Log.e("asd", error.message)
+                            }
+                        }
                 )
     }
 
@@ -96,5 +129,13 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = layoutManager
         imagesAdapter.setViewType(viewType)
+    }
+
+    private fun showLoading() {
+        refreshLayout.isRefreshing = true
+    }
+
+    private fun hideLoading() {
+        refreshLayout.isRefreshing = false
     }
 }
