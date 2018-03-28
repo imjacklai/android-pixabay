@@ -1,13 +1,13 @@
 package tw.jacklai.pixabay
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.StaggeredGridLayoutManager
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -117,13 +117,18 @@ class MainActivity : AppCompatActivity() {
 
                                 isLoading = false
 
+                                if (response.total == 0) {
+                                    Snackbar.make(coordinatorLayout, "No result", Snackbar.LENGTH_SHORT).show()
+                                    return@run
+                                }
+
                                 imagesAdapter.addData(response.images)
                             }
                         },
                         { error ->
                             run {
                                 hideLoading()
-                                Log.e("asd", error.message)
+                                Snackbar.make(coordinatorLayout, "Connection failed", Snackbar.LENGTH_SHORT).show()
                             }
                         }
                 )
