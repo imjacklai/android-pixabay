@@ -1,4 +1,4 @@
-package tw.jacklai.pixabay
+package tw.jacklai.pixabay.widget
 
 import android.content.Context
 import android.util.AttributeSet

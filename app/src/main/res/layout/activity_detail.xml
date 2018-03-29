@@ -48,7 +48,7 @@
                 app:layout_constraintTop_toTopOf="@+id/userImageView"
                 app:layout_constraintBottom_toBottomOf="@+id/userImageView"/>
 
-            <tw.jacklai.pixabay.ScaleImageView
+            <tw.jacklai.pixabay.widget.ScaleImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

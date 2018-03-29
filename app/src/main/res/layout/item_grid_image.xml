@@ -12,7 +12,7 @@
     app:cardUseCompatPadding="true"
     app:cardPreventCornerOverlap="true">
 
-    <tw.jacklai.pixabay.SquareImageView
+    <tw.jacklai.pixabay.widget.SquareImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

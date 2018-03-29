@@ -1,4 +1,4 @@
-package tw.jacklai.pixabay
+package tw.jacklai.pixabay.widget
 
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager

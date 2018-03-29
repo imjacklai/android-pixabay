@@ -1,10 +1,14 @@
-package tw.jacklai.pixabay
+package tw.jacklai.pixabay.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_list_image.view.*
+import tw.jacklai.pixabay.GlideApp
+import tw.jacklai.pixabay.R
+import tw.jacklai.pixabay.widget.ScaleImageView
+import tw.jacklai.pixabay.ViewType
 import tw.jacklai.pixabay.model.Image
 
 /**

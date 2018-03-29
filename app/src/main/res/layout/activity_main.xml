@@ -9,7 +9,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context="tw.jacklai.pixabay.MainActivity">
+    tools:context="tw.jacklai.pixabay.activity.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

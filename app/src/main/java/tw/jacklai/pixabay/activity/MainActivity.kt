@@ -1,4 +1,4 @@
-package tw.jacklai.pixabay
+package tw.jacklai.pixabay.activity
 
 import android.app.SearchManager
 import android.content.Context
@@ -17,6 +17,11 @@ import android.view.inputmethod.EditorInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import tw.jacklai.pixabay.adapter.ImagesAdapter
+import tw.jacklai.pixabay.widget.PaginationScrollListener
+import tw.jacklai.pixabay.R
+import tw.jacklai.pixabay.ViewType
+import tw.jacklai.pixabay.model.Response
 import tw.jacklai.pixabay.model.api.PixabayService
 
 class MainActivity : AppCompatActivity() {
@@ -116,44 +121,44 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun search(query: String) {
-        showLoading()
+        refreshLayout.isRefreshing = true
         this.query = query
         pixabayService.search(query, page, perPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { response ->
-                            run {
-                                hideLoading()
-
-                                if (isReload) {
-                                    imagesAdapter.removeData()
-                                    isReload = false
-                                    recyclerView.scrollToPosition(0)
-                                }
-
-                                if (Math.ceil(response.total / perPage.toDouble()).toInt() == page) {
-                                    isLastPage = true
-                                }
-
-                                isLoading = false
-
-                                if (response.total == 0) {
-                                    Snackbar.make(coordinatorLayout, "No result", Snackbar.LENGTH_SHORT).show()
-                                    return@run
-                                }
-
-                                imagesAdapter.addData(response.images)
-                            }
-                        },
-                        { error ->
-                            run {
-                                hideLoading()
-                                isLoading = false
-                                Snackbar.make(coordinatorLayout, "Connection failed", Snackbar.LENGTH_SHORT).show()
-                            }
-                        }
+                        { response -> onSuccess(response) },
+                        { _ -> onFailure() }
                 )
+    }
+
+    private fun onSuccess(response: Response) {
+        refreshLayout.isRefreshing = false
+
+        if (isReload) {
+            imagesAdapter.removeData()
+            isReload = false
+            recyclerView.scrollToPosition(0)
+        }
+
+        if (Math.ceil(response.total / perPage.toDouble()).toInt() == page) {
+            isLastPage = true
+        }
+
+        isLoading = false
+
+        if (response.total == 0) {
+            Snackbar.make(coordinatorLayout, "No result", Snackbar.LENGTH_SHORT).show()
+            return
+        }
+
+        imagesAdapter.addData(response.images)
+    }
+
+    private fun onFailure() {
+        refreshLayout.isRefreshing = false
+        isLoading = false
+        Snackbar.make(coordinatorLayout, "Connection failed", Snackbar.LENGTH_SHORT).show()
     }
 
     private fun setRecyclerViewLayoutManager(viewType: ViewType) {
@@ -161,10 +166,12 @@ class MainActivity : AppCompatActivity() {
 
         currentViewType = viewType
 
-        val position = when (recyclerView.layoutManager) {
-            is LinearLayoutManager -> (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-            is GridLayoutManager -> (recyclerView.layoutManager as GridLayoutManager).findFirstCompletelyVisibleItemPosition()
-            is StaggeredGridLayoutManager -> (recyclerView.layoutManager as StaggeredGridLayoutManager).findFirstCompletelyVisibleItemPositions(null)[0]
+        val layoutManager = recyclerView.layoutManager
+
+        val firstVisiblePosition = when (layoutManager) {
+            is LinearLayoutManager -> layoutManager.findFirstCompletelyVisibleItemPosition()
+            is GridLayoutManager -> layoutManager.findFirstCompletelyVisibleItemPosition()
+            is StaggeredGridLayoutManager -> layoutManager.findFirstCompletelyVisibleItemPositions(null)[0]
             else -> 0
         }
 
@@ -176,7 +183,7 @@ class MainActivity : AppCompatActivity() {
 
         imagesAdapter.setViewType(viewType)
         setRecyclerViewScrollListener()
-        recyclerView.scrollToPosition(position)
+        recyclerView.scrollToPosition(firstVisiblePosition)
 
         saveViewType(viewType)
     }
@@ -193,14 +200,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun isLoading(): Boolean = isLoading
         })
-    }
-
-    private fun showLoading() {
-        refreshLayout.isRefreshing = true
-    }
-
-    private fun hideLoading() {
-        refreshLayout.isRefreshing = false
     }
 
     private fun reset() {

@@ -1,8 +1,11 @@
-package tw.jacklai.pixabay
+package tw.jacklai.pixabay.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_detail.*
+import tw.jacklai.pixabay.GlideApp
+import tw.jacklai.pixabay.R
+import tw.jacklai.pixabay.widget.ScaleImageView
 import tw.jacklai.pixabay.model.Image
 
 /**
