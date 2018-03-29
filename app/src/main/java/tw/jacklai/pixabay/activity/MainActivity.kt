@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, DetailActivity::class.java)
             intent.putExtra("data", image)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out)
         })
 
         recyclerView.adapter = imagesAdapter

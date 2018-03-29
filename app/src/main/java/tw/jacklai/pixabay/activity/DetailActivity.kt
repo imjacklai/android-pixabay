@@ -5,8 +5,8 @@ import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_detail.*
 import tw.jacklai.pixabay.GlideApp
 import tw.jacklai.pixabay.R
-import tw.jacklai.pixabay.widget.ScaleImageView
 import tw.jacklai.pixabay.model.Image
+import tw.jacklai.pixabay.widget.ScaleImageView
 
 /**
  * Created by jacklai on 29/03/2018.
@@ -51,5 +51,10 @@ class DetailActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out)
     }
 }
