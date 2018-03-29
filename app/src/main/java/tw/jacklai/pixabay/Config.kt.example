@@ -1,0 +1,7 @@
+package tw.jacklai.pixabay
+
+class Config {
+    companion object {
+        const val PIXABAY_API_KEY = "YOUR_API_KEY"
+    }
+}
