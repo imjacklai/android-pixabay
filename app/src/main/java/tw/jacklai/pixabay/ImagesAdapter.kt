@@ -33,9 +33,9 @@ class ImagesAdapter(private val itemClick: (Image) -> Unit) : RecyclerView.Adapt
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val layout = when (viewType) {
-            1 -> R.layout.item_list_image
-            2 -> R.layout.item_grid_image
-            3 -> R.layout.item_staggered_grid_image
+            0 -> R.layout.item_list_image
+            1 -> R.layout.item_grid_image
+            2 -> R.layout.item_staggered_grid_image
             else -> R.layout.item_list_image
         }
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)

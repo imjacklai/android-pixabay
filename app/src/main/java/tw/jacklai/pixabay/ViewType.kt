@@ -5,5 +5,5 @@ package tw.jacklai.pixabay
  */
 
 enum class ViewType(val value: Int) {
-    LIST(1), GRID(2), STAGGERED_GRID(3)
+    LIST(0), GRID(1), STAGGERED_GRID(2)
 }

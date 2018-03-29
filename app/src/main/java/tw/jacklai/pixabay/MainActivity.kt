@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var imagesAdapter: ImagesAdapter
 
-    private var currentViewTypeItemId = R.id.list
+    private var currentViewType: ViewType? = null
 
     private var query = ""
 
@@ -57,10 +57,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         })
 
-        recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = imagesAdapter
-
-        setRecyclerViewScrollListener()
+        setRecyclerViewLayoutManager(readViewType())
 
         search(query)
     }
@@ -106,17 +104,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item == null || currentViewTypeItemId == item.itemId) {
-            return super.onOptionsItemSelected(item)
-        }
+        if (item == null) return super.onOptionsItemSelected(item)
 
         when (item.itemId) {
             R.id.list -> setRecyclerViewLayoutManager(ViewType.LIST)
             R.id.grid -> setRecyclerViewLayoutManager(ViewType.GRID)
             R.id.staggered_grid -> setRecyclerViewLayoutManager(ViewType.STAGGERED_GRID)
         }
-
-        currentViewTypeItemId = item.itemId
 
         return super.onOptionsItemSelected(item)
     }
@@ -163,6 +157,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setRecyclerViewLayoutManager(viewType: ViewType) {
+        if (currentViewType == viewType) return
+
+        currentViewType = viewType
+
         val position = when (recyclerView.layoutManager) {
             is LinearLayoutManager -> (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
             is GridLayoutManager -> (recyclerView.layoutManager as GridLayoutManager).findFirstCompletelyVisibleItemPosition()
@@ -175,9 +173,12 @@ class MainActivity : AppCompatActivity() {
             ViewType.GRID -> GridLayoutManager(this, 2)
             ViewType.STAGGERED_GRID -> StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
+
         imagesAdapter.setViewType(viewType)
         setRecyclerViewScrollListener()
         recyclerView.scrollToPosition(position)
+
+        saveViewType(viewType)
     }
 
     private fun setRecyclerViewScrollListener() {
@@ -207,5 +208,17 @@ class MainActivity : AppCompatActivity() {
         isLoading = true
         isLastPage = false
         isReload = true
+    }
+
+    private fun saveViewType(viewType: ViewType) {
+        val settings = getSharedPreferences("DATA", Context.MODE_PRIVATE)
+        settings.edit()
+                .putInt("view_type", viewType.value)
+                .apply()
+    }
+
+    private fun readViewType(): ViewType {
+        val settings = getSharedPreferences("DATA", Context.MODE_PRIVATE)
+        return ViewType.values()[settings.getInt("view_type", 0)]
     }
 }
