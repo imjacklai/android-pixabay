@@ -6,9 +6,10 @@ The android app for browsing and searching images on [Pixabay](https://pixabay.c
 
 * Image search (text and voice)
 * Endless scrolling
-* Refreshing current query
-* Switching different view type (list, grid and staggered grid)
-* Memorizing current view type as default for next launch
+* Refresh current query
+* Switch different view type (list, grid and staggered grid)
+* Memorize current view type as default for next launch
+* Display detail (user, likes, favorites and tags) for an image
 
 ## Getting Started
 
