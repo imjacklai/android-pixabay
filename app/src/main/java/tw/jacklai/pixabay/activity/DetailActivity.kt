@@ -30,6 +30,7 @@ class DetailActivity : AppCompatActivity() {
         userLabel.text = image.user
         likes.text = "${image.likes}"
         favorites.text = "${image.favorites}"
+        tags.text = image.tags
 
         GlideApp.with(userImageView.context)
                 .load(image.userImageUrl)
