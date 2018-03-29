@@ -11,7 +11,7 @@ import tw.jacklai.pixabay.model.Image
  * Created by jacklai on 27/03/2018.
  */
 
-class ImagesAdapter : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
+class ImagesAdapter(private val itemClick: (Image) -> Unit) : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
     private val images = ArrayList<Image>()
 
     private var viewType: ViewType = ViewType.LIST
@@ -39,7 +39,7 @@ class ImagesAdapter : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
             else -> R.layout.item_list_image
         }
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
-        return ImageViewHolder(view)
+        return ImageViewHolder(view, itemClick)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
@@ -54,7 +54,7 @@ class ImagesAdapter : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
         return viewType.value
     }
 
-    inner class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ImageViewHolder(view: View, private val itemClick: (Image) -> Unit) : RecyclerView.ViewHolder(view) {
         fun bindView(image: Image) {
             with (itemView) {
                 if (viewType == ViewType.STAGGERED_GRID) {
@@ -80,6 +80,8 @@ class ImagesAdapter : RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>() {
                         .fallback(R.mipmap.image_not_found)
                         .override((image.webFormatWidth * 0.6).toInt(), (image.webFormatHeight * 0.6).toInt())
                         .into(imageView)
+
+                setOnClickListener { itemClick(image) }
             }
         }
     }

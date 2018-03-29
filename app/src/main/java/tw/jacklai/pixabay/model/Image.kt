@@ -1,11 +1,14 @@
 package tw.jacklai.pixabay.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by jacklai on 27/03/2018.
  */
 
+@Parcelize
 data class Image(
         val id: Int,
 
@@ -28,4 +31,4 @@ data class Image(
 
         val likes: Int,
         val favorites: Int
-)
+) : Parcelable

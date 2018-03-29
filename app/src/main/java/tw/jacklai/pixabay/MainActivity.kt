@@ -51,7 +51,11 @@ class MainActivity : AppCompatActivity() {
             search(query)
         }
 
-        imagesAdapter = ImagesAdapter()
+        imagesAdapter = ImagesAdapter(itemClick = { image ->
+            val intent = Intent(this, DetailActivity::class.java)
+            intent.putExtra("data", image)
+            startActivity(intent)
+        })
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = imagesAdapter
