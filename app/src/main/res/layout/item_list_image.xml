@@ -12,62 +12,10 @@
     app:cardUseCompatPadding="true"
     app:cardPreventCornerOverlap="true">
 
-    <android.support.constraint.ConstraintLayout
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/userImageView"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <TextView
-            android:id="@+id/userLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            app:layout_constraintStart_toEndOf="@id/userImageView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/userImageView"
-            app:layout_constraintBottom_toBottomOf="@+id/userImageView"/>
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_marginTop="10dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintTop_toBottomOf="@+id/userImageView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <TextView
-            android:id="@+id/likes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:drawableStart="@drawable/ic_likes"
-            android:drawablePadding="5dp"
-            app:layout_constraintTop_toBottomOf="@+id/imageView"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <TextView
-            android:id="@+id/favorites"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:drawableStart="@drawable/ic_favorites"
-            android:drawablePadding="5dp"
-            app:layout_constraintTop_toTopOf="@+id/likes"
-            app:layout_constraintBottom_toBottomOf="@+id/likes"
-            app:layout_constraintStart_toEndOf="@+id/likes"/>
-
-    </android.support.constraint.ConstraintLayout>
+        android:layout_height="250dp"
+        android:scaleType="centerCrop"/>
 
 </android.support.v7.widget.CardView>

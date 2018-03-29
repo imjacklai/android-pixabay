@@ -61,18 +61,6 @@ class ImagesAdapter(private val itemClick: (Image) -> Unit) : RecyclerView.Adapt
                     (imageView as ScaleImageView).setInitSize(image.webFormatWidth, image.webFormatHeight)
                 }
 
-                userLabel.text = image.user
-                likes.text = "${image.likes}"
-                favorites.text = "${image.favorites}"
-
-                GlideApp.with(userImageView.context)
-                        .load(image.userImageUrl)
-                        .placeholder(R.mipmap.image_loading)
-                        .error(R.mipmap.image_not_found)
-                        .fallback(R.mipmap.image_not_found)
-                        .override((image.webFormatWidth * 0.6).toInt(), (image.webFormatHeight * 0.6).toInt())
-                        .into(userImageView)
-
                 GlideApp.with(imageView.context)
                         .load(image.webFormatUrl)
                         .placeholder(R.mipmap.image_loading)
