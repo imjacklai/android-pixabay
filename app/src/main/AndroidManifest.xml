@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity"
+        <activity android:name=".main.MainActivity"
             android:launchMode="singleTop"
             android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
@@ -27,7 +27,7 @@
             <meta-data android:name="android.app.searchable" android:resource="@xml/searchable"/>
         </activity>
 
-        <activity android:name=".activity.DetailActivity"
+        <activity android:name=".detail.DetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
     </application>
 

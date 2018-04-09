@@ -1,4 +1,4 @@
-package tw.jacklai.pixabay.activity
+package tw.jacklai.pixabay.main
 
 import android.app.SearchManager
 import android.content.Context
@@ -14,18 +14,17 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
-import tw.jacklai.pixabay.adapter.ImagesAdapter
-import tw.jacklai.pixabay.widget.PaginationScrollListener
 import tw.jacklai.pixabay.R
 import tw.jacklai.pixabay.ViewType
+import tw.jacklai.pixabay.detail.DetailActivity
 import tw.jacklai.pixabay.model.Response
 import tw.jacklai.pixabay.model.api.PixabayService
+import tw.jacklai.pixabay.widget.PaginationScrollListener
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainContract.View {
     private val pixabayService by lazy { PixabayService.create() }
+    private val presenter by lazy { MainPresenter(pixabayService) }
 
     private lateinit var searchView: SearchView
 
@@ -66,6 +65,8 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = imagesAdapter
         setRecyclerViewLayoutManager(readViewType())
 
+        presenter.attachView(this)
+
         search(query)
     }
 
@@ -75,6 +76,11 @@ class MainActivity : AppCompatActivity() {
             val query = intent.getStringExtra(SearchManager.QUERY)
             searchView.setQuery(query, true)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -121,19 +127,7 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun search(query: String) {
-        refreshLayout.isRefreshing = true
-        this.query = query
-        pixabayService.search(query, page, perPage)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { response -> onSuccess(response) },
-                        { _ -> onFailure() }
-                )
-    }
-
-    private fun onSuccess(response: Response) {
+    override fun showImages(response: Response) {
         refreshLayout.isRefreshing = false
 
         if (isReload) {
@@ -156,10 +150,16 @@ class MainActivity : AppCompatActivity() {
         imagesAdapter.addData(response.images)
     }
 
-    private fun onFailure() {
+    override fun showConnectionFailed() {
         refreshLayout.isRefreshing = false
         isLoading = false
         Snackbar.make(coordinatorLayout, "Connection failed", Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun search(query: String) {
+        refreshLayout.isRefreshing = true
+        this.query = query
+        presenter.search(query, page, perPage)
     }
 
     private fun setRecyclerViewLayoutManager(viewType: ViewType) {
